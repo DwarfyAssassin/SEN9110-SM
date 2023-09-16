@@ -6,7 +6,7 @@ from elevator import Elevator
 from employee import Employee
 
 from floor import Floor
-from movement import Movement
+from mover import Mover
 
 
 class System():
@@ -31,7 +31,7 @@ class System():
 if __name__ == "__main__":
     i_n = 1
     verboos = True 
-    trace = False # open(file=".\output.txt", mode="w")
+    trace = open(file=".\output.txt", mode="w")
     
     
     for iteration in range(i_n):
@@ -50,7 +50,7 @@ if __name__ == "__main__":
                                              departure_time = sim.Uniform(17 * 60 * 60, 18 * 60 * 60).sample(),
                                              destination = sim.IntUniform(1, system.floor_amount-1).sample(),
                                              system = system))
-        system.mover = Movement(moving_amount = 10,
+        system.mover = Mover(moving_amount = 10,
                                 interval = 1 * 60 * 60,
                                 system = system)
 
