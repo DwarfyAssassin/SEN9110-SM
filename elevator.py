@@ -13,6 +13,8 @@ class Elevator(sim.Component):
     destination = None
     is_moving = None
     system = None
+    start_idle_time = None
+    idle_time = None
 
 
     def setup(self, system):
@@ -27,6 +29,8 @@ class Elevator(sim.Component):
         self.destination = -1
         self.is_moving = False
         self.system = system
+        self.start_idle_time = -1
+        self.idle_time = 0
 
 
     def process(self):
@@ -42,8 +46,14 @@ class Elevator(sim.Component):
                                 self.destination = floor.number
                 
                 if self.destination == -1:
+                    if self.start_idle_time == -1:
+                        self.start_idle_time = self.system.env.now()
                     self.standby()
             
+            # idle time stats
+            if self.start_idle_time != -1:
+                self.idle_time += self.system.env.now() - self.start_idle_time
+                self.start_idle_time = -1
 
             # leave people
             for e in self.holding_queue:
