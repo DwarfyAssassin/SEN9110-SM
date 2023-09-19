@@ -31,7 +31,7 @@ class System():
 if __name__ == "__main__":
     i_n = 1
     verboos = True 
-    trace = open(file=".\output.txt", mode="w")
+    trace = False # open(file=".\output.txt", mode="w")
     
     
     for iteration in range(i_n):

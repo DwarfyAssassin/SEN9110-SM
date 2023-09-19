@@ -22,7 +22,7 @@ class Mover(sim.Component):
             moving_employees = sim.random.sample(movable_employees, min(self.moving_amount, len(movable_employees)))
             for e in moving_employees:
                 e.destination = sim.IntUniform(1, self.system.floor_amount-1).sample()
-                e.hold(sim.IntUniform(0, 1 * 60 * 60 - 1).sample())
+                e.hold(sim.Uniform(0, 1 * 60 * 60 - 1).sample())
             
             self.hold(self.interval)
         
