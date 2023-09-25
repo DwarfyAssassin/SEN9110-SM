@@ -1,8 +1,12 @@
 import salabim as sim
 
+from employee import Employee
+
+# from main import System
+
 class Mover(sim.Component):
-    moving_amount = None
-    interval = None
+    moving_amount:int = None
+    interval:float = None
     system = None
 
     def setup(self, moving_amount, interval, system):
@@ -15,16 +19,15 @@ class Mover(sim.Component):
         self.hold(till=9*60*60)
         
         while self.system.env.now() < 17*60*60:
-            movable_employees = [] #assuming employees have fix schedule
+            movable_people = [] #assuming employees have fix schedule
             for floor in self.system.floors:
-                movable_employees += floor.idle_queue
+                movable_people += floor.idle_queue
+            movable_people = [p for p in movable_people if p.move_floors]
 
-            moving_employees = sim.random.sample(movable_employees, min(self.moving_amount, len(movable_employees)))
-            for e in moving_employees:
-                e.destination = sim.IntUniform(1, self.system.floor_amount-1).sample()
+            moving_people = sim.random.sample(movable_people, min(self.moving_amount, len(movable_people)))
+            for e in moving_people:
+                while e.destination == e.location:
+                    e.destination = sim.IntUniform(1, self.system.floor_amount-1).sample()
                 e.hold(sim.Uniform(0, 1 * 60 * 60 - 1).sample())
             
             self.hold(self.interval)
-        
-        for e in self.system.employees:
-            e.hold(till=e.departure_time)

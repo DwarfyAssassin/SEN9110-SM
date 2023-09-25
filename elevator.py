@@ -1,20 +1,25 @@
 import salabim as sim
 import numpy as np
 
+# from main import System
+
 class Elevator(sim.Component):
-    holding_queue = None
-    capacity = None
-    travel_speed = None # second/floor
-    deceleration_time = None
-    acceleration_time = None
-    loading_time = None
-    unloading_time = None
-    location = None # floor number
-    destination = None
-    is_moving = None
+    holding_queue:sim.Queue = None
+    capacity:int = None
+    travel_speed:float = None # second/floor
+    deceleration_time:float = None
+    acceleration_time:float = None
+    loading_time:sim.Erlang = None
+    unloading_time:sim.Erlang = None
+    location:int = None # floor number
+    destination:int = None
+    is_moving:bool = None
     system = None
-    start_idle_time = None
-    idle_time = None
+    
+    start_idle_time:float = None
+    idle_time:float = None
+    stats_loc:list[float] = None
+    stats_loc_t:list[float] = None
 
 
     def setup(self, system):
@@ -29,26 +34,19 @@ class Elevator(sim.Component):
         self.destination = -1
         self.is_moving = False
         self.system = system
+
         self.start_idle_time = -1
         self.idle_time = 0
+        self.stats_loc = [0]
+        self.stats_loc_t = [28800]
 
 
     def process(self):
         while True:
             while self.destination == -1:
-                for e in self.holding_queue:
-                    if self.destination == -1 or (abs(e.destination - self.location) > abs(self.destination - self.location)):
-                        self.destination = e.destination
-                if self.destination == -1:
-                    for floor in self.system.floors:
-                        if floor.elevator_queue_up.length() > 0 or floor.elevator_queue_down.length() > 0:
-                            if self.destination == -1 or abs(floor.number - self.location) > abs(self.destination - self.location):
-                                self.destination = floor.number
-                
-                if self.destination == -1:
-                    if self.start_idle_time == -1:
-                        self.start_idle_time = self.system.env.now()
-                    self.standby()
+                if self.start_idle_time == -1:
+                    self.start_idle_time = self.system.env.now()
+                self.standby()
             
             # idle time stats
             if self.start_idle_time != -1:
@@ -56,42 +54,55 @@ class Elevator(sim.Component):
                 self.start_idle_time = -1
 
             # leave people
-            for e in self.holding_queue:
-                if e.destination == self.location:
+            for p in self.holding_queue:
+                if p.destination == self.location:
                     self.stop_moving()
+                    # if p.name() == "employee.201":
+                    #     print(p.name(), "l", p.location, p.destination, p.is_in_elevator(), p.is_in_floor_e_queue(), p._member(self.system.floors[0].idle_queue), self.system.env.now())
 
-                    e.leave(self.holding_queue)
-                    e.enter(self.system.floors[self.location].idle_queue)
-                    e.location = self.location
+                    p.leave(self.holding_queue)
+                    p.enter(self.system.floors[self.location].idle_queue)
+                    p.location = self.location
                     self.hold(self.unloading_time.sample())
 
             # enter people down
             if self.location >= self.destination and self.system.floors[self.location].elevator_queue_down.length() > 0:
                 self.stop_moving()
                 
-                for i in range(min(self.capacity - self.holding_queue.length(), self.system.floors[self.location].elevator_queue_down.length())):
-                    e = self.system.floors[self.location].elevator_queue_down.pop()
-                    e.enter(self.holding_queue)
+                while self.capacity - self.holding_queue.length() > 0 and self.system.floors[self.location].elevator_queue_down.length() > 0:
+                    p = self.system.floors[self.location].elevator_queue_down.pop()
+                    # if p.name() == "employee.201":
+                    #     print(p.name(), "down", p.location, p.destination, p.is_in_elevator(), p.is_in_floor_e_queue(), p._member(self.system.floors[0].idle_queue), self.system.env.now())
+
+                    p.enter(self.holding_queue)
                     self.hold(self.loading_time.sample())
             
             # enter people up
             if self.location <= self.destination and self.system.floors[self.location].elevator_queue_up.length() > 0:
                 self.stop_moving()
+ 
+                while self.capacity - self.holding_queue.length() > 0 and self.system.floors[self.location].elevator_queue_up.length() > 0:
+                    p = self.system.floors[self.location].elevator_queue_up.pop()
+                    # if p.name() == "employee.201":
+                    #     print(p.name(), "up", p.location, p.destination, p.is_in_elevator(), p.is_in_floor_e_queue(), p._member(self.system.floors[0].idle_queue), self.system.env.now())
 
-                for i in range(min(self.capacity - self.holding_queue.length(), self.system.floors[self.location].elevator_queue_up.length())):
-                    e = self.system.floors[self.location].elevator_queue_up.pop()
-                    e.enter(self.holding_queue)
+                    p.enter(self.holding_queue)
                     self.hold(self.loading_time.sample())
 
 
 
             # if destination => destination = -1 else move floors
             if self.location == self.destination:
+                self.stop_moving()
                 self.destination = -1
             else:
                 self.start_moving()
                 self.location += np.sign(self.destination - self.location)
                 self.hold(self.travel_speed)
+
+                self.stats_loc += [self.location]
+                self.stats_loc_t += [self.system.env.now()]
+
 
     def stop_moving(self):
         if self.is_moving:

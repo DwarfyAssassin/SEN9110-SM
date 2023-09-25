@@ -2,11 +2,9 @@ import salabim as sim
 
 from person import Person
 
-# from main import System
-
-class Employee(Person):
-
+class Visitor(Person):
     def setup(self, arrival_time, departure_time, destination, system):
         super().setup(arrival_time, departure_time, destination, system)
-        self.takes_stairs = True
-        self.move_floors = True
+        self.takes_stairs = False
+        self.move_floors = False
+        self.departure_time = sim.Uniform(self.arrival_time, 17.5 * 60 * 60).sample()
