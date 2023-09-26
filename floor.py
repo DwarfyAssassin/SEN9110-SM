@@ -11,7 +11,3 @@ class Floor(sim.Component):
         self.elevator_queue_down = sim.Queue(self.name() + "-elevator_queue_down")
         self.idle_queue = sim.Queue(self.name() + "-idle_queue")
         self.number = number
-
-
-    # def process(self):
-    #     while True:

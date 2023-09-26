@@ -18,6 +18,7 @@ class System():
     
     floors:list[Floor] = None
     employees:list[Employee] = None
+    visitors:list[Visitor] = None
     elevators:list[Elevator] = None
     mover:Mover = None
     elevator_controler:ElevatorControler = None
@@ -34,22 +35,24 @@ class System():
         
 
 if __name__ == "__main__":
-    sim_time_start = 8*60*60
-    sim_time_end = 18*60*60
-    i_n = 100
+    i_n = 1
     verboos = True 
     trace = False # open(file=".\output.txt", mode="w")
 
+    sim_time_start = 8*60*60
+    sim_time_end = 18*60*60
     FLOOR_AMOUNT = 13
+    ELEVATOR_AMOUNT = 2
 
     floor_stats = np.zeros((i_n, FLOOR_AMOUNT, 4))
-    elevator_stats = np.zeros(i_n)
+    elevator_stats = np.zeros((i_n, ELEVATOR_AMOUNT))
     
     for iteration in range(i_n):
         start_time = dt.now()
 
+        # Setup env and system
         seed = int(random.random() * (2**32 - 1))
-        env = sim.Environment(trace=trace, random_seed=seed) # 1234567
+        env = sim.Environment(trace=trace, random_seed=seed)
         if verboos: print(f"Starting with seed {seed} ({iteration+1}/{i_n})")
         system = System(env, FLOOR_AMOUNT)
         env._now = sim_time_start
@@ -57,7 +60,7 @@ if __name__ == "__main__":
         # Setup Components
         for i in range(system.floor_amount):
             system.floors.append(Floor(number = i))
-        for i in range(2):
+        for i in range(ELEVATOR_AMOUNT):
             system.elevators.append(Elevator(system = system))
         for i in range(396):
             system.employees.append(Employee(arrival_time = sim.Uniform(8 * 60 * 60, 9 * 60 * 60).sample(),
@@ -79,15 +82,15 @@ if __name__ == "__main__":
         end_time = dt.now()
 
 
-        # Print Results
+
+        # Print Single sim Results
         if verboos: 
             print(f"Finished in {end_time - start_time}s ({iteration+1}/{i_n})")
-            elevator_stats[iteration] = system.elevators[0].idle_time
 
             # for e in system.employees:
-            #     print(f"{e.name}, {e.location}, {e.destination}")
+            #     print(f"{e.name()}, {e.location}, {e.destination}")
             # for e in system.visitors:
-            #     print(f"{e.name}, {e.location}, {e.destination}")
+            #     print(f"{e.name()}, {e.location}, {e.destination}")
 
             
             # x, w = system.floors[0].elevator_queue_up.length._xweight()
@@ -97,15 +100,30 @@ if __name__ == "__main__":
             # t = np.append([0], np.cumsum(w)[:-1]) + 28800
             # n = x[:-1]
             # for i in range(len(n)):
-            #     plt.plot([t[i], t[i+1]], [n[i], n[i]], "b")
-            #     plt.plot(t[i+1], n[i], "b.")
+            #     plt.plot([t[i], t[i+1]], [n[i], n[i]], "b", label="Queue up F0 length")
+            #     plt.plot(t[i+1], n[i], "b.", label="Queue up F0 entry/exit")
 
-            # t = system.elevators[0].stats_loc_t + [64800]
-            # n = np.array(system.elevators[0].stats_loc) + 0.1
-            # for i in range(len(n)):
-            #     plt.plot([t[i], t[i+1]], [n[i], n[i]], "k")
+            # t0 = system.elevators[0].stats_loc_t + [64800]
+            # l0 = np.array(system.elevators[0].stats_loc) + 0.1
+            # t1 = system.elevators[1].stats_loc_t + [64800]
+            # l1 = np.array(system.elevators[1].stats_loc) + 0.2
+            # for i in range(len(l0)):
+            #     plt.plot([t0[i], t0[i+1]], [l0[i], l0[i]], "k", label="Elevator 1 location")
+            # for i in range(len(l1)):
+            #     plt.plot([t1[i], t1[i+1]], [l1[i], l1[i]], "r", label="Elevator 2 location")
+
+            # plt.xlabel("Time [s] (61200 = 17:00h)")
+            # plt.ylabel("Floor location [-] / Queue Length [people]")
+            # plt.yticks(range(0, 13))
+            # plt.title("Elevator and Queue up F0 behavior")
+            # handles, labels = plt.gca().get_legend_handles_labels()
+            # by_label = dict(zip(labels, handles))
+            # plt.legend(by_label.values(), by_label.keys())
             # plt.show()
+            print()
 
+            for i in range(len(system.elevators)):
+                elevator_stats[iteration, i] = system.elevators[i].idle_time
             
             for f in system.floors:        
                 floor_stats[iteration, f.number, 0] = f.elevator_queue_up.length.mean(ex0=True)
@@ -113,10 +131,9 @@ if __name__ == "__main__":
                 floor_stats[iteration, f.number, 2] = f.elevator_queue_up.length_of_stay.mean(ex0=True)
                 floor_stats[iteration, f.number, 3] = f.elevator_queue_down.length_of_stay.mean(ex0=True)
 
-
+    # Print multi sim results
     if verboos:
         print(f"Elevator stats, mean idle time {elevator_stats.mean():.0f}s, occupancy rate {(sim_time_end-sim_time_start - elevator_stats.mean()) / (sim_time_end-sim_time_start) * 100:.1f}%")
-
 
         x_labels = []
         for i in range(FLOOR_AMOUNT * 2):

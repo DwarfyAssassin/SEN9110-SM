@@ -43,6 +43,7 @@ class Elevator(sim.Component):
 
     def process(self):
         while True:
+            # Only activate if you have a destination
             while self.destination == -1:
                 if self.start_idle_time == -1:
                     self.start_idle_time = self.system.env.now()
@@ -57,9 +58,6 @@ class Elevator(sim.Component):
             for p in self.holding_queue:
                 if p.destination == self.location:
                     self.stop_moving()
-                    # if p.name() == "employee.201":
-                    #     print(p.name(), "l", p.location, p.destination, p.is_in_elevator(), p.is_in_floor_e_queue(), p._member(self.system.floors[0].idle_queue), self.system.env.now())
-
                     p.leave(self.holding_queue)
                     p.enter(self.system.floors[self.location].idle_queue)
                     p.location = self.location
@@ -71,9 +69,6 @@ class Elevator(sim.Component):
                 
                 while self.capacity - self.holding_queue.length() > 0 and self.system.floors[self.location].elevator_queue_down.length() > 0:
                     p = self.system.floors[self.location].elevator_queue_down.pop()
-                    # if p.name() == "employee.201":
-                    #     print(p.name(), "down", p.location, p.destination, p.is_in_elevator(), p.is_in_floor_e_queue(), p._member(self.system.floors[0].idle_queue), self.system.env.now())
-
                     p.enter(self.holding_queue)
                     self.hold(self.loading_time.sample())
             
@@ -83,15 +78,11 @@ class Elevator(sim.Component):
  
                 while self.capacity - self.holding_queue.length() > 0 and self.system.floors[self.location].elevator_queue_up.length() > 0:
                     p = self.system.floors[self.location].elevator_queue_up.pop()
-                    # if p.name() == "employee.201":
-                    #     print(p.name(), "up", p.location, p.destination, p.is_in_elevator(), p.is_in_floor_e_queue(), p._member(self.system.floors[0].idle_queue), self.system.env.now())
-
                     p.enter(self.holding_queue)
                     self.hold(self.loading_time.sample())
 
 
-
-            # if destination => destination = -1 else move floors
+            # if at destination then -1 else move floors
             if self.location == self.destination:
                 self.stop_moving()
                 self.destination = -1

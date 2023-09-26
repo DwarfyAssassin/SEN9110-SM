@@ -24,6 +24,7 @@ class Person(sim.Component):
         self.enter(self.system.floors[self.location].idle_queue)
 
         while True:
+            # If past departure time then set destination 0
             if self.system.env.now() >= self.departure_time:
                 if self.is_in_floor_e_queue():
                     self.leave(self.get_floor_e_queue())
@@ -32,7 +33,8 @@ class Person(sim.Component):
                 self.destination = 0
                 if self.location == self.destination:
                     break
-
+            
+            # If at destination wait untill depature time
             if self.location == self.destination:
                 self.hold(till=self.departure_time)
             else:
@@ -40,8 +42,8 @@ class Person(sim.Component):
                 if not self.is_in_elevator():
                     self.leave(current_floor.idle_queue)
 
-                # TODO messes up with people going home slightly
-                if self.takes_stairs and abs(self.destination - self.location) <= 2 and current_floor.elevator_queue_down.length() + current_floor.elevator_queue_up.length() >= 10:
+                # Enter stairs or elevator to go to destination
+                if self.takes_stairs and not self.is_in_elevator() and abs(self.destination - self.location) <= 2 and current_floor.elevator_queue_down.length() + current_floor.elevator_queue_up.length() >= 10:
                     distance = abs(self.destination - self.location)
                     self.hold(sim.Uniform(15*distance, 25*distance).sample())
                     self.enter(self.system.floors[self.destination].idle_queue)
@@ -51,6 +53,7 @@ class Person(sim.Component):
                 elif not self.is_in_elevator():
                     self.enter(current_floor.elevator_queue_up)
                 
+                # Sleep until departure or end of sim
                 if self.system.env.now() >= self.departure_time:
                     self.passivate()
                 else:
