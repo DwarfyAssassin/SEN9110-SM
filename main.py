@@ -35,7 +35,7 @@ class System():
         
 
 if __name__ == "__main__":
-    i_n = 1
+    i_n = 10
     verboos = True 
     trace = False # open(file=".\output.txt", mode="w")
 
