@@ -1,20 +1,19 @@
 import random
-import sys
 import salabim as sim
 from datetime import datetime as dt
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-from elevator import Elevator
-from employee import Employee
 
-from floor import Floor
-from mover import Mover
-from visitor import Visitor
-from elevatorcontroler import ElevatorControler
+from components.elevator import Elevator
+from components.employee import Employee
+from components.floor import Floor
+from components.mover import Mover
+from components.visitor import Visitor
+from components.elevatorcontroler import ElevatorControler
 
 class System():
-    floor_amount = None
+    floor_amount:int = None
     
     floors:list[Floor] = None
     employees:list[Employee] = None
@@ -31,6 +30,8 @@ class System():
         self.employees = []
         self.visitors = []
         self.elevators = []
+        self.mover = None
+        self.elevator_controler = None
         self.floor_amount = floor_n
         
 

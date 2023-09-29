@@ -1,8 +1,4 @@
-import salabim as sim
-
-from person import Person
-
-# from main import System
+from components.person import Person
 
 class Employee(Person):
 

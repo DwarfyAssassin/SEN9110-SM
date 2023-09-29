@@ -1,7 +1,9 @@
 import salabim as sim
 import numpy as np
 
-# from main import System
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from main import System
 
 class Elevator(sim.Component):
     holding_queue:sim.Queue = None
@@ -14,7 +16,7 @@ class Elevator(sim.Component):
     location:int = None # floor number
     destination:int = None
     is_moving:bool = None
-    system = None
+    system:'System' = None
     
     start_idle_time:float = None
     idle_time:float = None

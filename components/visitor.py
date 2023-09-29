@@ -1,6 +1,6 @@
 import salabim as sim
 
-from person import Person
+from components.person import Person
 
 class Visitor(Person):
     def setup(self, arrival_time, departure_time, destination, system):

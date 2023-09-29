@@ -1,9 +1,13 @@
 import salabim as sim
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from main import System
+
 class Mover(sim.Component):
     moving_amount:int = None
     interval:float = None
-    system = None
+    system:'System' = None
 
     def setup(self, moving_amount, interval, system):
         self.moving_amount = moving_amount

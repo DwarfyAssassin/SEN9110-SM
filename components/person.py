@@ -1,6 +1,8 @@
 import salabim as sim
 
-# from main import System
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from main import System
 
 class Person(sim.Component):
     arrival_time:float = None
@@ -9,7 +11,7 @@ class Person(sim.Component):
     location:int = None
     takes_stairs:bool = None
     move_floors:bool = None
-    system = None
+    system:'System' = None
 
     def setup(self, arrival_time, departure_time, destination, system):
         self.arrival_time = arrival_time

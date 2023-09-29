@@ -1,7 +1,11 @@
 import salabim as sim
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from main import System
+
 class ElevatorControler(sim.Component):
-    system = None
+    system:'System' = None
     
     def setup(self, system):
         self.system = system
