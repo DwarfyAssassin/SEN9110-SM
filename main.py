@@ -57,8 +57,8 @@ if __name__ == "__main__":
         if verboos: print(f"Starting with seed {seed} ({iteration+1}/{i_n})")
         system = System(env, FLOOR_AMOUNT)
         env._now = sim_time_start
-        # env.background_color("20%gray")
-        # env.animate(True)
+        env.background_color("20%gray")
+        env.animate(True)
         
         # Setup Components
         for i in range(system.floor_amount):

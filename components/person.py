@@ -1,6 +1,7 @@
 import salabim as sim
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Tuple
+
 if TYPE_CHECKING:
     from main import System
 
@@ -82,3 +83,10 @@ class Person(sim.Component):
             if self._member(f.elevator_queue_up):
                 return f.elevator_queue_up
         return None
+    
+    def get_animation_color(self):
+        return "red"
+    
+    def animation_objects(self, id: Any) -> Tuple:
+        ar = sim.AnimateRectangle((0,0,20,20), text=str(self.sequence_number()), fillcolor=self.get_animation_color(), textcolor="white", arg=self)
+        return 25, 25, ar

@@ -21,8 +21,6 @@ class Elevator(sim.Component):
     start_idle_time:float = None
     idle_time:float = None
     location_monitor:sim.Monitor = None
-    stats_loc:list[float] = None
-    stats_loc_t:list[float] = None
 
 
     def setup(self, system):
@@ -41,8 +39,12 @@ class Elevator(sim.Component):
         self.start_idle_time = -1
         self.idle_time = 0
         self.location_monitor = sim.Monitor("Location of " + self.name(), type="uint8", env=self.env, level=True, initial_tally=0)
-        self.stats_loc = [0]
-        self.stats_loc_t = [28800]
+        
+        sim.AnimateRectangle((528+30*self.sequence_number(), 50, 552+30*self.sequence_number(), 238), text="", fillcolor="50%gray", arg=self)
+        sim.AnimateQueue(self.holding_queue, x=530+30*self.sequence_number(), y=216, title="", direction="s", id="elevator")
+
+        sim.AnimateRectangle((530+30*self.sequence_number(), 260, 550+30*self.sequence_number(), 310), y=lambda e, t: e.location*70, text=f"E{self.sequence_number()}", textcolor="black", fillcolor="blue", arg=self)
+        
 
 
     def process(self):
@@ -93,9 +95,6 @@ class Elevator(sim.Component):
                 self.location += np.sign(self.destination - self.location)
                 self.hold(self.travel_speed)
                 self.location_monitor.tally(self.location)
-
-                self.stats_loc.append(self.location)
-                self.stats_loc_t.append(self.system.env.now())
 
 
     def stop_moving(self):
