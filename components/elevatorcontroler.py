@@ -59,10 +59,11 @@ class ElevatorControler(sim.Component):
             movable_elevators = []
             for e in self.system.elevators:
                 if e.destination == -1:
-                    movable_elevators += [e]
+                    movable_elevators.append(e)
             elevator = sim.random.sample(movable_elevators, 1)[0]
 
             # assign elevator
             for i in destinations_up.union(destinations_down):
                 if elevator.destination == -1 or abs(i - elevator.location) > abs(elevator.destination - elevator.location):
                     elevator.destination = i
+            elevator.activate()

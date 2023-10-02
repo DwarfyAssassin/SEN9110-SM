@@ -36,7 +36,7 @@ class System():
         
 
 if __name__ == "__main__":
-    i_n = 10
+    i_n = 1
     verboos = True 
     trace = False # open(file=".\output.txt", mode="w")
 
@@ -57,6 +57,8 @@ if __name__ == "__main__":
         if verboos: print(f"Starting with seed {seed} ({iteration+1}/{i_n})")
         system = System(env, FLOOR_AMOUNT)
         env._now = sim_time_start
+        # env.background_color("20%gray")
+        # env.animate(True)
         
         # Setup Components
         for i in range(system.floor_amount):
@@ -95,23 +97,18 @@ if __name__ == "__main__":
 
             
             # x, w = system.floors[0].elevator_queue_up.length._xweight()
-            # x = np.array(x).astype(float)
-            # xw = x * w
-
-            # t = np.append([0], np.cumsum(w)[:-1]) + 28800
-            # n = x[:-1]
+            # n = np.array(x).astype(float)
+            # t = np.append([0], np.cumsum(w)) + 28800
             # for i in range(len(n)):
             #     plt.plot([t[i], t[i+1]], [n[i], n[i]], "b", label="Queue up F0 length")
             #     plt.plot(t[i+1], n[i], "b.", label="Queue up F0 entry/exit")
 
-            # t0 = system.elevators[0].stats_loc_t + [64800]
-            # l0 = np.array(system.elevators[0].stats_loc) + 0.1
-            # t1 = system.elevators[1].stats_loc_t + [64800]
-            # l1 = np.array(system.elevators[1].stats_loc) + 0.2
-            # for i in range(len(l0)):
-            #     plt.plot([t0[i], t0[i+1]], [l0[i], l0[i]], "k", label="Elevator 1 location")
-            # for i in range(len(l1)):
-            #     plt.plot([t1[i], t1[i+1]], [l1[i], l1[i]], "r", label="Elevator 2 location")
+            # for e_i in range(len(system.elevators)):
+            #     x, w = system.elevators[e_i].location_monitor._xweight()
+            #     l = np.array(x).astype(float) + 0.1*(e_i+1)
+            #     t = np.append([0], np.cumsum(w)) + 28800
+            #     for i in range(len(l)):
+            #         plt.plot([t[i], t[i+1]], [l[i], l[i]], f"C{e_i}", label=f"Elevator {e_i} location")
 
             # plt.xlabel("Time [s] (61200 = 17:00h)")
             # plt.ylabel("Floor location [-] / Queue Length [people]")
@@ -139,9 +136,9 @@ if __name__ == "__main__":
         x_labels = []
         for i in range(FLOOR_AMOUNT * 2):
             if i <= 12:
-                x_labels += [f"F{i%13} up"]
+                x_labels.append(f"F{i%13} up")
             else:
-                x_labels += [f"F{i%13} down"]
+                x_labels.append(f"F{i%13} down")
 
         plt.subplot(121)
         floor_stats_l = np.nan_to_num(np.append(floor_stats[:, :, 0], floor_stats[:, :, 1], axis=1))

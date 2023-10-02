@@ -35,28 +35,20 @@ This folder contains following files.
 Before trying to run the model, please have a look at the _Getting Started_ section in this "README.md" file.
 
 ```
-├── elevator          <- Process of elevator object.      
-│
-├── elevatorcontroller<- The decision maker of the elevator.                                       
-│
-├── employee          <- Inheritance of the person class. Process of the employee to move between floors.                     
-│
-├── floor             <- Floor object.
-│        
-├── main              <- Simulator of the elevator model.  
-│
-├── mover             <- Process the triggered of employee movement between floor and departure.
-│
-├── person            <- The composition of employee and visitor.  
-|
-├── README.md         <- This file.
-│
-├── requirements      <- The requirements file for reproducing the analysis environment.
-|
-├── reports           <- This folder contain our report in powerpoint format.
-│
-├── visitor           <- Inheritance of person class. Elaborate the process of visitor lifecycle.  
-│            
+
+├─ components/
+│  ├─ elevator.py           <- Process of elevator object.
+│  ├─ elevatorcontroler.py  <- The decision maker of the elevator.
+│  ├─ employee.py           <- Inheritance of the person class. Process of the employee to move between floors.
+│  ├─ floor.py              <- Floor object.
+│  ├─ mover.py              <- Process the triggered of employee movement between floor and departure.
+│  ├─ person.py             <- The composition of employee and visitor.
+│  ├─ visitor.py            <- Inheritance of person class. Elaborate the process of visitor lifecycle.
+├─ .gitignore
+├─ main.py                  <- Simulator of the elevator model.
+├─ README.md                <- This file.
+├─ requirements.txt         <- The requirements file for reproducing the analysis environment.
+├─ reports/                 <- This folder contain our report in powerpoint format.
 
 ```
 
