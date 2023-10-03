@@ -20,3 +20,7 @@ class Floor(sim.Component):
 
         sim.AnimateRectangle((20, 70*self.number + 273, 392, 70*self.number + 297), text="", fillcolor="50%gray", arg=self)
         sim.AnimateQueue(self.idle_queue, x=370, y=70*self.number + 275, title=f"Floor {number} queues", direction="w", id="idle")
+        
+        if self.number == 0:
+            sim.AnimateMonitor(self.elevator_queue_up.length, x=600, y=600, width=400, height=100, title="F0 Queue Length", horizontal_scale=5, vertical_scale=5)
+            sim.AnimateMonitor(self.elevator_queue_up.length_of_stay, x=600, y=480, width=400, height=100, title="F0 Queue Time", horizontal_scale=5, vertical_scale=5)
