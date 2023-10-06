@@ -36,7 +36,7 @@ class System():
         
 
 if __name__ == "__main__":
-    i_n = 1
+    i_n = 10
     verboos = True 
     trace = False # open(file=".\output.txt", mode="w")
 
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         system = System(env, FLOOR_AMOUNT)
         env._now = sim_time_start
         env.background_color("20%gray")
-        env.animate(True)
+        # env.animate(True)
         
         # Setup Components
         for i in range(system.floor_amount):

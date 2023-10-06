@@ -1,4 +1,4 @@
-# README: Assignment 2
+# README: Assignment 3
 
 Created by: SEN9110 Simulation Masterclass, Group 12 
 
@@ -12,7 +12,7 @@ Created by: SEN9110 Simulation Masterclass, Group 12
 
 ## Introduction
 
-The repository contains simulation of employees using the elevator in a building. The model was built using Salabim.
+The repository contains simulation of employees and visitors using the elevator in a building. The model was built using Salabim.
 
 ## Getting Started
 
@@ -24,10 +24,10 @@ Once you have installed the necessary dependencies, you can launch the model and
 ```
     python main.py
 ```
-The simulation will run from 8:00 to 18:00, with a second time step. which is equivalent to 10 hours. 
+The simulation will run from 8:00 to 18:00, with a second artificial time step. which is equivalent to 10 hours. 
 
 ### Output
-During the simulation, the program will print output to the console showing the seed and running time for each replication. After the simulation has completed, the console will show brief statistics about mean idle time and occupancy rate of the elevator. In addition, a pop-up figure of the Queue Length and Queue Length of Service will be shown.
+During the simulation, the program will show animation of the elevator simulation. After the simulation has completed, the console will show brief statistics about mean idle time and occupancy rate of the elevator. In addition, a pop-up figure of the Queue Length and Queue Length of Service will be shown.
 
 ### Folder structure
 
